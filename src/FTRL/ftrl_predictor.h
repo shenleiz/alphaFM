@@ -38,7 +38,7 @@ void ftrl_predictor::run_task(vector<string>& dataBuffer)
         string tmp_x="";
         for(int i = 0; i < sample.x.size(); ++i)
         {
-        	tmp_x += tmp_x+" "+ sample.x[i].first+":"+ to_string(sample.x[i].second);
+        	tmp_x = tmp_x+" "+ sample.x[i].first+":"+ to_string(sample.x[i].second);
         }
         outputVec[i] = to_string(sample.y) + " " + to_string(score)+tmp_x;
     }
