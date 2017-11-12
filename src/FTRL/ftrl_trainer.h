@@ -136,7 +136,7 @@ public:
     virtual void run_task(vector<string>& dataBuffer);
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
-    void fun_test(int y, double p);
+    static void fun_test(int y, double p);
 private:
     void train(int y, const vector<pair<string, double> >& x);
 private:
