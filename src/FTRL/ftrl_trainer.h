@@ -138,7 +138,7 @@ public:
     void outputModel(ofstream& out);
 private:
     void train(int y, const vector<pair<string, double> >& x);
-    static void fun(int y, double p);
+     void fun(int y, double p);
 private:
     ftrl_model* pModel;
     double w_alpha, w_beta, w_l1, w_l2;
