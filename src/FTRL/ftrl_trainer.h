@@ -137,7 +137,7 @@ public:
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
 private:
-    void train(int y, const vector<pair<string, double> >& x);
+    double train(int y, const vector<pair<string, double> >& x);
 private:
     ftrl_model* pModel;
     double w_alpha, w_beta, w_l1, w_l2;
@@ -169,7 +169,9 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
         fm_sample sample(dataBuffer[i]);
-        train(sample.y, sample.x);
+        double p=train(sample.y, sample.x);
+        cout <<sample.y<<" "<<1 / (1 + exp(-p )) << " train_pre" << endl;
+
     }
 }
 
@@ -187,7 +189,7 @@ void ftrl_trainer::outputModel(ofstream& out)
 
 
 //输入一个样本，更新参数
-void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
+double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
 {
     ftrl_model_unit* thetaBias = pModel->getOrInitModelUnitBias();
     vector<ftrl_model_unit*> theta(x.size(), NULL);
@@ -259,12 +261,6 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     for(int i = 0; i <= xLen; ++i)
     {
         ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
-        if (i==0)
-        {
-        	mu.mtx.lock();
-        	cout << y<<" "<<1 / (1 + exp(-p)) << " train_pre"<<endl;
-        	mu.mtx.unlock();
-        }
         double xi = i < xLen ? x[i].second : 1.0;
         if((i < xLen && k1) || (i == xLen && k0))
         {
@@ -299,6 +295,7 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
             mu.mtx.unlock();
         }
     }
+    return p;
     //////////
     //pModel->debugPrintModel();
     //////////
