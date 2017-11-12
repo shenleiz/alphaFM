@@ -143,7 +143,7 @@ public:
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
 private:
-    void train(int y, const vector<pair<string, double> >& x);
+    double train(int y, const vector<pair<string, double> >& x);
 private:
     ftrl_model* pModel;
     ofstream& train_pre_out;
@@ -203,7 +203,7 @@ void ftrl_trainer::outputModel(ofstream& out)
 
 
 //输入一个样本，更新参数
-void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
+double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
 {
     ftrl_model_unit* thetaBias = pModel->getOrInitModelUnitBias();
     vector<ftrl_model_unit*> theta(x.size(), NULL);
@@ -309,6 +309,7 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
             mu.mtx.unlock();
         }
     }
+    return p;
     //////////
     //pModel->debugPrintModel();
     //////////
