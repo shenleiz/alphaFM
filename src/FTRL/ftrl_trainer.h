@@ -12,7 +12,7 @@ struct trainer_option
     trainer_option() : k0(true), k1(true), factor_num(8), init_mean(0.0), init_stdev(0.1), w_alpha(0.05), w_beta(1.0), w_l1(0.1), w_l2(5.0),
                v_alpha(0.05), v_beta(1.0), v_l1(0.1), v_l2(5.0), 
                threads_num(1), b_init(false), force_v_sparse(false) {}
-    string model_path, init_m_path;
+    string model_path, init_m_path,pre_out_path;
     double init_mean, init_stdev;
     double w_alpha, w_beta, w_l1, w_l2;
     double v_alpha, v_beta, v_l1, v_l2;
@@ -31,6 +31,12 @@ struct trainer_option
                     throw invalid_argument("invalid command\n");
                 model_path = args[++i];
             }
+            else if(args[i].compare("-out") == 0)
+			{
+				if(i == argc - 1)
+					throw invalid_argument("invalid command\n");
+				pre_out_path=args[++i];
+			}
             else if(args[i].compare("-dim") == 0)
             {
                 if(i == argc - 1)
@@ -132,7 +138,7 @@ struct trainer_option
 class ftrl_trainer : public pc_task
 {
 public:
-    ftrl_trainer(const trainer_option& opt);
+    ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out);
     virtual void run_task(vector<string>& dataBuffer);
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
@@ -140,6 +146,7 @@ private:
     void train(int y, const vector<pair<string, double> >& x);
 private:
     ftrl_model* pModel;
+    ofstream& train_pre_out;
     double w_alpha, w_beta, w_l1, w_l2;
     double v_alpha, v_beta, v_l1, v_l2;
     bool k0;
@@ -148,7 +155,7 @@ private:
 };
 
 
-ftrl_trainer::ftrl_trainer(const trainer_option& opt)
+ftrl_trainer::ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out)
 {
     w_alpha = opt.w_alpha;
     w_beta = opt.w_beta;
@@ -166,11 +173,19 @@ ftrl_trainer::ftrl_trainer(const trainer_option& opt)
 
 void ftrl_trainer::run_task(vector<string>& dataBuffer)
 {
+	vector<string> outputVec(dataBuffer.size());
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
         fm_sample sample(dataBuffer[i]);
-        train(sample.y, sample.x);
+        double p=train(sample.y, sample.x);
+        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p))+" train_pre";
     }
+    outMtx.lock();
+	for(int i = 0; i < outputVec.size(); ++i)
+	{
+		train_pre_out << outputVec[i] << endl;
+	}
+	outMtx.unlock();
 }
 
 

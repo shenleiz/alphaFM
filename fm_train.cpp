@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
         cout << train_help() << endl;
         return EXIT_FAILURE;
     }
-
-    ftrl_trainer trainer(opt);
+    ofstream train_pre_out(opt.pre_out_path.c_str(), ofstream::out);
+    ftrl_trainer trainer(opt,train_pre_out);
 
     if(opt.b_init) 
     {
