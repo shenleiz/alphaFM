@@ -152,6 +152,7 @@ private:
     bool k0;
     bool k1;
     bool force_v_sparse;
+    mutex outMtx;
 };
 
 
