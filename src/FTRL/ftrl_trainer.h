@@ -136,7 +136,7 @@ public:
     virtual void run_task(vector<string>& dataBuffer);
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
-    void fun(int y, double p);
+    void fun_test(int y, double p);
 private:
     void train(int y, const vector<pair<string, double> >& x);
 private:
@@ -149,7 +149,7 @@ private:
     mutex bufMtx;
 };
 
-ftrl_trainer::fun(int y, double p)
+ftrl_trainer::fun_test(int y, double p)
 {
 	bufMtx.lock();
 	cout << y<<" "<< 1 / (1 + exp(-p))<<" train_pre:" <<endl;
@@ -261,7 +261,7 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     vector<double> sum(pModel->factor_num);
     double bias = thetaBias->wi;
     double p = pModel->predict(x, bias, theta, sum);
-    fun(y,p);
+    fun_test(y,p);
     double mult = y * (1 / (1 + exp(-p * y)) - 1);
     //update w_n, w_z
     for(int i = 0; i <= xLen; ++i)
