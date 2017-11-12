@@ -259,6 +259,12 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     for(int i = 0; i <= xLen; ++i)
     {
         ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
+        if (i==0)
+        {
+        	mu.mtx.lock();
+        	cout << y<<" "<<1 / (1 + exp(-p)) << " train_pre"<<endl;
+        	mu.mtx.unlock();
+        }
         double xi = i < xLen ? x[i].second : 1.0;
         if((i < xLen && k1) || (i == xLen && k0))
         {
