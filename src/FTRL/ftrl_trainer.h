@@ -138,7 +138,7 @@ struct trainer_option
 class ftrl_trainer : public pc_task
 {
 public:
-    ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out);
+    ftrl_trainer(const trainer_option& opt, ofstream& _train_pre_out);
     virtual void run_task(vector<string>& dataBuffer);
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
@@ -156,7 +156,7 @@ private:
 };
 
 
-ftrl_trainer::ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out)
+ftrl_trainer::ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out):train_pre_out(_train_pre_out)
 {
     w_alpha = opt.w_alpha;
     w_beta = opt.w_beta;
