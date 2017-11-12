@@ -145,6 +145,7 @@ private:
     bool k0;
     bool k1;
     bool force_v_sparse;
+    mutex outMtx;
 };
 
 
@@ -166,13 +167,19 @@ ftrl_trainer::ftrl_trainer(const trainer_option& opt)
 
 void ftrl_trainer::run_task(vector<string>& dataBuffer)
 {
+	vector<string> outputVec(dataBuffer.size());
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
         fm_sample sample(dataBuffer[i]);
         double p=train(sample.y, sample.x);
-        cout <<sample.y<<" "<<1 / (1 + exp(-p )) << " train_pre" << endl;
-
+        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p )))+" train_pre";
     }
+    outMtx.lock();
+	for(int i = 0; i < outputVec.size(); ++i)
+	{
+		cout << outputVec[i] << endl;
+	}
+	outMtx.unlock();
 }
 
 
