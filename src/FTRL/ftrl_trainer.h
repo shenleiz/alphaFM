@@ -149,12 +149,6 @@ private:
     mutex bufMtx;
 };
 
-ftrl_trainer::fun_test(int y, double p)
-{
-	bufMtx.lock();
-	cout << y<<" "<< 1 / (1 + exp(-p))<<" train_pre:" <<endl;
-	bufMtx.unlock();
-}
 ftrl_trainer::ftrl_trainer(const trainer_option& opt)
 {
     w_alpha = opt.w_alpha;
@@ -170,7 +164,12 @@ ftrl_trainer::ftrl_trainer(const trainer_option& opt)
     force_v_sparse = opt.force_v_sparse;
     pModel = new ftrl_model(opt.factor_num, opt.init_mean, opt.init_stdev);
 }
-
+void ftrl_trainer::fun_test(int y, double p)
+{
+	bufMtx.lock();
+	cout << y<<" "<< 1 / (1 + exp(-p))<<" train_pre:" <<endl;
+	bufMtx.unlock();
+}
 void ftrl_trainer::run_task(vector<string>& dataBuffer)
 {
     for(int i = 0; i < dataBuffer.size(); ++i)
