@@ -138,6 +138,7 @@ public:
     void outputModel(ofstream& out);
 private:
     void train(int y, const vector<pair<string, double> >& x);
+    static void fun(int y, double p);
 private:
     ftrl_model* pModel;
     double w_alpha, w_beta, w_l1, w_l2;
@@ -148,7 +149,7 @@ private:
     mutex bufMtx;
 };
 
-static void fun(int y, double p) {
+ftrl_trainer::fun(int y, double p) {
 	bufMtx.lock();
 	cout << y<<" "<< 1 / (1 + exp(-p))<<" train_pre:" <<endl;
 	bufMtx.unlock();
