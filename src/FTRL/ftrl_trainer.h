@@ -179,7 +179,7 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     {
         fm_sample sample(dataBuffer[i]);
         double p=train(sample.y, sample.x);
-        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p))+" train_pre";
+        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p)))+" train_pre";
     }
     outMtx.lock();
 	for(int i = 0; i < outputVec.size(); ++i)
