@@ -145,9 +145,14 @@ private:
     bool k0;
     bool k1;
     bool force_v_sparse;
+    mutex bufMtx;
 };
 
-
+static void fun(int y, double p) {
+	bufMtx.lock();
+	cout << y<<" "<< 1 / (1 + exp(-p))<<" train_pre:" <<endl;
+	bufMtx.unlock();
+}
 ftrl_trainer::ftrl_trainer(const trainer_option& opt)
 {
     w_alpha = opt.w_alpha;
@@ -254,6 +259,7 @@ void ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     vector<double> sum(pModel->factor_num);
     double bias = thetaBias->wi;
     double p = pModel->predict(x, bias, theta, sum);
+    fun(y,p);
     double mult = y * (1 / (1 + exp(-p * y)) - 1);
     //update w_n, w_z
     for(int i = 0; i <= xLen; ++i)
