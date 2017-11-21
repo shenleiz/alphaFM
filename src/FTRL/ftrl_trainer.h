@@ -179,7 +179,14 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     {
         fm_sample sample(dataBuffer[i]);
         double p=train(sample.y, sample.x);
-        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p)))+" train_pre";
+        string tmp_x="";
+		for(int i = 0; i < sample.x.size(); ++i)
+		{
+			if (sample.x[i].first.find("countrycode=")==0 || sample.x[i].first.find("adtype=")==0 || sample.x[i].first.find("imagesize=")==0 || sample.x[i].first.find("exchange=")==0 ||  sample.x[i].first.find("os=")==0 ) {
+				tmp_x = tmp_x+" "+ sample.x[i].first;
+			}
+		}
+        outputVec[i] = to_string(sample.y) + " " + to_string(1 / (1 + exp(-p)))+tmp_x;
     }
     outMtx.lock();
 	for(int i = 0; i < outputVec.size(); ++i)

@@ -38,7 +38,9 @@ void ftrl_predictor::run_task(vector<string>& dataBuffer)
         string tmp_x="";
         for(int i = 0; i < sample.x.size(); ++i)
         {
-        	tmp_x = tmp_x+" "+ sample.x[i].first+":"+ to_string(sample.x[i].second);
+        	if (sample.x[i].first.find("countrycode=")==0 || sample.x[i].first.find("adtype=")==0 || sample.x[i].first.find("imagesize=")==0 || sample.x[i].first.find("exchange=")==0 || sample.x[i].first.find("exchange=")==0 || sample.x[i].first.find("os=")==0 ) {
+        		tmp_x = tmp_x+" "+ sample.x[i].first;
+        	}
         }
         outputVec[i] = to_string(sample.y) + " " + to_string(score)+tmp_x;
     }
