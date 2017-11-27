@@ -15,6 +15,7 @@ class fm_sample
 public:
     int y;
     vector<pair<string, double> > x;
+    bool filter_flag;
     fm_sample(const string& line);
 };
 
@@ -61,6 +62,7 @@ fm_sample::fm_sample(const string& line)
 	catch (exception& e)
 	{
 		cout <<"Error wrong line input: " << line << " ----" <<e.what() << endl;
+		this->filter_flag=true;
 	}
 }
 

@@ -178,6 +178,9 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
         fm_sample sample(dataBuffer[i]);
+        if (sample.filter_flag){
+        	continue;
+        }
         double p=train(sample.y, sample.x);
         string tmp_x="";
 		for(int i = 0; i < sample.x.size(); ++i)

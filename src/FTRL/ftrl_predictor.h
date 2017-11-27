@@ -34,6 +34,9 @@ void ftrl_predictor::run_task(vector<string>& dataBuffer)
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
         fm_sample sample(dataBuffer[i]);
+        if (sample.filter_flag){
+        	continue;
+        }
         double score = pModel->getScore(sample.x, pModel->muBias->wi, pModel->muMap);
         string tmp_x="";
         for(int i = 0; i < sample.x.size(); ++i)
