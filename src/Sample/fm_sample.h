@@ -65,6 +65,12 @@ fm_sample::fm_sample(const string& line)
 		cout <<"Error wrong line input: " << line << " ----" <<e << endl;
 		this->filter_flag=true;
 	}
+	catch (exception& e)
+	{
+		cout <<"Error wrong line input: " << line << " ----" <<e.what() << endl;
+		this->filter_flag=true;
+	}
+
 }
 
 
