@@ -42,8 +42,8 @@ fm_sample::fm_sample(const string& line)
 			pose = line.find_first_of(innerSpliter, posb);
 			if(pose == string::npos)
 			{
-				cout << "wrong line input\n" << line << endl;
-				throw "wrong line input";
+				cout << "[ERROR_LINE]wrong line input\n" << line << endl;
+//				throw "wrong line input";
 				this->filter_flag=true;
 				break;
 			}
@@ -51,8 +51,8 @@ fm_sample::fm_sample(const string& line)
 			posb = pose + 1;
 			if(posb >= line.size())
 			{
-				cout << "wrong line input\n" << line << endl;
-				throw "wrong line input";
+				cout << "[ERROR_LINE]wrong line input\n" << line << endl;
+//				throw "wrong line input";
 				this->filter_flag=true;
 				break;
 			}
@@ -66,7 +66,7 @@ fm_sample::fm_sample(const string& line)
 	}
 	catch (string e)
 	{
-		cout <<"Error wrong line input: " << line << " ----" <<e << endl;
+		cout <<"[ERROR_LINE]Error wrong line input: " << line << " ----" <<e << endl;
 		this->filter_flag=true;
 	}
 }
