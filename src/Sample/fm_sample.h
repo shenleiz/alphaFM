@@ -43,7 +43,7 @@ fm_sample::fm_sample(const string& line)
 			if(pose == string::npos)
 			{
 				cout << "wrong line input\n" << line << endl;
-//				throw "wrong line input";
+				throw "wrong line input";
 				this->filter_flag=true;
 				break;
 			}
@@ -52,7 +52,7 @@ fm_sample::fm_sample(const string& line)
 			if(posb >= line.size())
 			{
 				cout << "wrong line input\n" << line << endl;
-//				throw "wrong line input";
+				throw "wrong line input";
 				this->filter_flag=true;
 				break;
 			}
@@ -64,9 +64,9 @@ fm_sample::fm_sample(const string& line)
 			}
 		}
 	}
-	catch (exception& e)
+	catch (string e)
 	{
-		cout <<"Error wrong line input: " << line << " ----" <<e.what() << endl;
+		cout <<"Error wrong line input: " << line << " ----" <<e << endl;
 		this->filter_flag=true;
 	}
 }
