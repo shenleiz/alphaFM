@@ -60,7 +60,7 @@ fm_sample::fm_sample(const string& line)
 			}
 		}
 	}
-	catch (string e)
+	catch (char const* e)
 	{
 		cout <<"Error wrong line input: " << line << " ----" <<e << endl;
 		this->filter_flag=true;
