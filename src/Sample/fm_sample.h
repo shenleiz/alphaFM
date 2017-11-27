@@ -24,6 +24,7 @@ fm_sample::fm_sample(const string& line)
 {
 	try
 	{
+		this->filter_flag=false;
 		this->x.clear();
 		size_t posb = line.find_first_not_of(spliter, 0);
 		size_t pose = line.find_first_of(spliter, posb);
@@ -42,14 +43,18 @@ fm_sample::fm_sample(const string& line)
 			if(pose == string::npos)
 			{
 				cout << "wrong line input\n" << line << endl;
-				throw "wrong line input";
+//				throw "wrong line input";
+				this->filter_flag=true;
+				break;
 			}
 			key = line.substr(posb, pose-posb);
 			posb = pose + 1;
 			if(posb >= line.size())
 			{
 				cout << "wrong line input\n" << line << endl;
-				throw "wrong line input";
+//				throw "wrong line input";
+				this->filter_flag=true;
+				break;
 			}
 			pose = line.find_first_of(spliter, posb);
 			value = stod(line.substr(posb, pose-posb));
