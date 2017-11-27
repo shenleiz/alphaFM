@@ -179,6 +179,7 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     {
         fm_sample sample(dataBuffer[i]);
         if (sample.filter_flag){
+        	outputVec[i]="";
         	continue;
         }
         double p=train(sample.y, sample.x);
@@ -194,7 +195,9 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
     outMtx.lock();
 	for(int i = 0; i < outputVec.size(); ++i)
 	{
-		train_pre_out << outputVec[i] << endl;
+		if (outputVec[i]!=""){
+			train_pre_out << outputVec[i] << endl;
+		}
 	}
 	outMtx.unlock();
 }
