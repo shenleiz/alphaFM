@@ -224,18 +224,11 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     for(int i = 0; i < xLen; ++i)
     {
         const string& index = x[i].first;
-        if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
-        	theta[i] = NULL;
-        	continue;
-        }
         theta[i] = pModel->getOrInitModelUnit(index);
     }
     //update w via FTRL
     for(int i = 0; i <= xLen; ++i)
     {
-        if (theta[i] == NULL){
-        	continue;
-        }
         ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
 
         if((i < xLen && k1) || (i == xLen && k0))
@@ -261,9 +254,6 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update v via FTRL
     for(int i = 0; i < xLen; ++i)
     {
-        if (theta[i] == NULL){
-        	continue;
-        }
         ftrl_model_unit& mu = *(theta[i]);
         for(int f = 0; f < pModel->factor_num; ++f)
         {
@@ -298,6 +288,12 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update w_n, w_z
     for(int i = 0; i <= xLen; ++i)
     {
+    	if (i<xLen){
+    		const string& index = x[i].first;
+			if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
+				continue;
+			}
+    	}
         ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
         double xi = i < xLen ? x[i].second : 1.0;
         if((i < xLen && k1) || (i == xLen && k0))
@@ -313,6 +309,12 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update v_n, v_z
     for(int i = 0; i < xLen; ++i)
     {
+    	if (i<xLen){
+    		const string& index = x[i].first;
+			if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
+				continue;
+			}
+    	}
         ftrl_model_unit& mu = *(theta[i]);
         const double& xi = x[i].second;
         for(int f = 0; f < pModel->factor_num; ++f)
