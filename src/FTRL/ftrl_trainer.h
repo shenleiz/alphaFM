@@ -322,6 +322,60 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
             mu.mtx.unlock();
         }
     }
+    //update w via FTRL
+       for(int i = 0; i <= xLen; ++i)
+       {
+           ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
+           if((i < xLen && k1) || (i == xLen && k0))
+           {
+               mu.mtx.lock();
+               if(fabs(mu.w_zi) <= w_l1)
+               {
+                   mu.wi = 0.0;
+               }
+               else
+               {
+                   if(force_v_sparse && mu.w_ni > 0 && 0.0 == mu.wi)
+                   {
+                       mu.reinit_vi(pModel->init_mean, pModel->init_stdev);
+                   }
+                   mu.wi = (-1) *
+                       (1 / (w_l2 + (w_beta + sqrt(mu.w_ni)) / w_alpha)) *
+                       (mu.w_zi - utils::sgn(mu.w_zi) * w_l1);
+               }
+               mu.mtx.unlock();
+           }
+       }
+       //update v via FTRL
+       for(int i = 0; i < xLen; ++i)
+       {
+           ftrl_model_unit& mu = *(theta[i]);
+           for(int f = 0; f < pModel->factor_num; ++f)
+           {
+               mu.mtx.lock();
+               double& vif = mu.vi[f];
+               double& v_nif = mu.v_ni[f];
+               double& v_zif = mu.v_zi[f];
+               if(v_nif > 0)
+               {
+                   if(force_v_sparse && 0.0 == mu.wi)
+                   {
+                       vif = 0.0;
+                   }
+                   else if(fabs(v_zif) <= v_l1)
+                   {
+                       vif = 0.0;
+                   }
+                   else
+                   {
+                       vif = (-1) *
+                           (1 / (v_l2 + (v_beta + sqrt(v_nif)) / v_alpha)) *
+                           (v_zif - utils::sgn(v_zif) * v_l1);
+                   }
+               }
+               mu.mtx.unlock();
+           }
+       }
     return p;
     //////////
     //pModel->debugPrintModel();
