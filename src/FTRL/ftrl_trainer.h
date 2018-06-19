@@ -233,10 +233,11 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update w via FTRL
     for(int i = 0; i <= xLen; ++i)
     {
-        ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
-        if (mu==NULL){
+        if (*(theta[i])==NULL){
         	continue;
         }
+        ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
+
         if((i < xLen && k1) || (i == xLen && k0))
         {
             mu.mtx.lock();
@@ -260,10 +261,10 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update v via FTRL
     for(int i = 0; i < xLen; ++i)
     {
-        ftrl_model_unit& mu = *(theta[i]);
-        if (mu==NULL){
+        if (*(theta[i])==NULL){
         	continue;
         }
+        ftrl_model_unit& mu = *(theta[i]);
         for(int f = 0; f < pModel->factor_num; ++f)
         {
             mu.mtx.lock();
