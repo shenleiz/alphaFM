@@ -41,7 +41,7 @@ public:
         }
     }
 
-    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg,bool fixflag)
+    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg, bool fixflag)
     {
     	fixFlag=fixflag;
         vi.resize(factor_num);
@@ -276,7 +276,7 @@ bool ftrl_model::loadModel(ifstream& in)
     {
         return false;
     }
-    muBias = new ftrl_model_unit(0, strVec);
+    muBias = new ftrl_model_unit(0, strVec,false);
     while(getline(in, line))
     {
         strVec.clear();
