@@ -229,6 +229,12 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update w via FTRL
     for(int i = 0; i <= xLen; ++i)
     {
+    	if (i<xLen){
+    		const string& index = x[i].first;
+			if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
+				continue;
+			}
+    	}
         ftrl_model_unit& mu = i < xLen ? *(theta[i]) : *thetaBias;
 
         if((i < xLen && k1) || (i == xLen && k0))
@@ -254,6 +260,12 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     //update v via FTRL
     for(int i = 0; i < xLen; ++i)
     {
+    	if (i<xLen){
+    		const string& index = x[i].first;
+			if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
+				continue;
+			}
+    	}
         ftrl_model_unit& mu = *(theta[i]);
         for(int f = 0; f < pModel->factor_num; ++f)
         {
