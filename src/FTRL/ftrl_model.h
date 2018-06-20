@@ -22,9 +22,11 @@ public:
     vector<double> v_ni;
     vector<double> v_zi;
     mutex mtx;
+    bool fixFlag;
 public:
     ftrl_model_unit(int factor_num, double v_mean, double v_stdev)
     {
+    	fixFlag=false;
         wi = 0.0;
         w_ni = 0.0;
         w_zi = 0.0;
@@ -39,8 +41,9 @@ public:
         }
     }
 
-    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg)
+    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg,bool fixflag)
     {
+    	fixFlag=fixflag;
         vi.resize(factor_num);
         v_ni.resize(factor_num);
         v_zi.resize(factor_num);
@@ -283,7 +286,11 @@ bool ftrl_model::loadModel(ifstream& in)
             return false;
         }
         string& index = strVec[0];
-        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, strVec);
+        bool fixflag=false;
+        if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
+        	fixflag=true;
+        }
+        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, strVec,fixflag);
         muMap[index] = pMU;
     }
     return true;
