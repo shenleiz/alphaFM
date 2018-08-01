@@ -172,7 +172,7 @@ ftrl_model_unit* ftrl_model::getOrInitModelUnitBias()
     if(NULL == muBias)
     {
         mtx_bias.lock();
-        muBias = new ftrl_model_unit(0, init_mean, init_stdev);
+        muBias = new ftrl_model_unit(0, init_mean, init_stdev,false);
         mtx_bias.unlock();
     }
     return muBias;
