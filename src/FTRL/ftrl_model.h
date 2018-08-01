@@ -23,10 +23,12 @@ public:
     vector<double> v_zi;
     mutex mtx;
     bool fixFlag;
+    bool combineFlag;
 public:
     ftrl_model_unit(int factor_num, double v_mean, double v_stdev)
     {
     	fixFlag=false;
+    	combineFlag=false;
         wi = 0.0;
         w_ni = 0.0;
         w_zi = 0.0;
@@ -41,9 +43,10 @@ public:
         }
     }
 
-    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg, bool fixflag)
+    ftrl_model_unit(int factor_num, const vector<string>& modelLineSeg, bool fixflag,bool combineflag)
     {
     	fixFlag=fixflag;
+    	combineFlag=combineflag;
         vi.resize(factor_num);
         v_ni.resize(factor_num);
         v_zi.resize(factor_num);
@@ -145,6 +148,9 @@ ftrl_model_unit* ftrl_model::getOrInitModelUnit(string index)
         mtx.lock();
         ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, init_mean, init_stdev);
         muMap.insert(make_pair(index, pMU));
+        if (index.find("combine_")==0) {
+        	pMU->combineFlag=true;
+        }
         mtx.unlock();
         return pMU;
     }
@@ -290,7 +296,11 @@ bool ftrl_model::loadModel(ifstream& in)
         if (index.find("weekday=")==0 || index.find("hour=")==0 ) {
         	fixflag=true;
         }
-        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, strVec,fixflag);
+        bool combineflag=false;
+        if (index.find("combine_")==0) {
+        	combineflag=true;
+        }
+        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, strVec,fixflag,combineflag);
         muMap[index] = pMU;
     }
     return true;

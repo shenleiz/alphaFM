@@ -261,6 +261,9 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
         if( mu.fixFlag){
         	continue;
         }
+        if (mu.combineFlag){
+        	continue;
+        }
         for(int f = 0; f < pModel->factor_num; ++f)
         {
             mu.mtx.lock();
@@ -314,6 +317,9 @@ double ftrl_trainer::train(int y, const vector<pair<string, double> >& x)
     {
         ftrl_model_unit& mu = *(theta[i]);
         if( mu.fixFlag){
+        	continue;
+        }
+        if (mu.combineFlag){
         	continue;
         }
         const double& xi = x[i].second;
