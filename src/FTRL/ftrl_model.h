@@ -282,7 +282,7 @@ bool ftrl_model::loadModel(ifstream& in)
     {
         return false;
     }
-    muBias = new ftrl_model_unit(0, strVec,false);
+    muBias = new ftrl_model_unit(0, strVec,false,false);
     while(getline(in, line))
     {
         strVec.clear();
