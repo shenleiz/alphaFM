@@ -25,10 +25,10 @@ public:
     bool fixFlag;
     bool combineFlag;
 public:
-    ftrl_model_unit(int factor_num, double v_mean, double v_stdev)
+    ftrl_model_unit(int factor_num, double v_mean, double v_stdev,bool combineflag)
     {
     	fixFlag=false;
-    	combineFlag=false;
+    	combineFlag=combineflag;
         wi = 0.0;
         w_ni = 0.0;
         w_zi = 0.0;
@@ -37,7 +37,12 @@ public:
         v_zi.resize(factor_num);
         for(int f = 0; f < factor_num; ++f)
         {
-            vi[f] = utils::gaussian(v_mean, v_stdev);
+        	if (combineFlag)
+        	{
+        		vi[f] =0.0;
+        	}else{
+        		vi[f] = utils::gaussian(v_mean, v_stdev);
+        	}
             v_ni[f] = 0.0;
             v_zi[f] = 0.0;
         }
@@ -146,11 +151,12 @@ ftrl_model_unit* ftrl_model::getOrInitModelUnit(string index)
     if(iter == muMap.end())
     {
         mtx.lock();
-        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, init_mean, init_stdev);
-        muMap.insert(make_pair(index, pMU));
+        bool combineFlag;
         if (index.find("combine_")==0) {
-        	pMU->combineFlag=true;
+        	combineFlag=true;
         }
+        ftrl_model_unit* pMU = new ftrl_model_unit(factor_num, init_mean, init_stdev,combineFlag);
+        muMap.insert(make_pair(index, pMU));
         mtx.unlock();
         return pMU;
     }
