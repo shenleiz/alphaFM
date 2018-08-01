@@ -151,7 +151,7 @@ ftrl_model_unit* ftrl_model::getOrInitModelUnit(string index)
     if(iter == muMap.end())
     {
         mtx.lock();
-        bool combineFlag;
+        bool combineFlag=false;
         if (index.find("combine_")==0) {
         	combineFlag=true;
         }
