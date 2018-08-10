@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <map>
 using namespace std;
 
 const string spliter = " ";
@@ -20,7 +21,7 @@ public:
 };
 
 
-fm_sample::fm_sample(const string& line) 
+fm_sample::fm_sample(const string& line,vector<vector<string>> combineFeatures)
 {
 	try
 	{
@@ -32,6 +33,7 @@ fm_sample::fm_sample(const string& line)
 		this->y = label > 0 ? 1 : -1;
 		string key;
 		double value;
+		map<string, string> map_feature;
 		while(pose < line.size())
 		{
 			posb = line.find_first_not_of(spliter, pose);
@@ -60,9 +62,39 @@ fm_sample::fm_sample(const string& line)
 			value = stod(line.substr(posb, pose-posb));
 			if(value != 0)
 			{
+				size_t tmp_pose = key.find_first_of("=", 0);
+				if(posb != string::npos)
+				{
+					string k=key.substr(0, tmp_pose);
+					map_feature[k]=key
+				}
+
 				this->x.push_back(make_pair(key, value));
 			}
 		}
+		if (combineFeatures.size()>0)
+		{
+			 for(int i = 0; i < combineFeatures.size(); ++i)
+			 {
+				 vector<string> local_combine_feature=combineFeatures[i];
+				 string feature="combine_";
+				 for (int j = 0; j < local_combine_feature.size(); ++j)
+				 {
+					 string local_key=local_combine_feature[j];
+					 iter=map_feature.find(local_key);
+					 if (iter != mapStudent.end())
+					 {
+						 feature+=iter.second();
+					 }
+					 else
+					 {
+						 feature+=local_key+"=none";
+					 }
+				 }
+				 this->x.push_back(make_pair(feature, 1.0));
+			 }
+		}
+
 	}
 	catch (string e)
 	{

@@ -5,14 +5,14 @@
 #include "ftrl_model.h"
 #include "../Sample/fm_sample.h"
 #include "../Utils/utils.h"
-
+#include <map>
 
 struct trainer_option
 {
     trainer_option() : k0(true), k1(true), factor_num(8), init_mean(0.0), init_stdev(0.1), w_alpha(0.05), w_beta(1.0), w_l1(0.1), w_l2(5.0),
                v_alpha(0.05), v_beta(1.0), v_l1(0.1), v_l2(5.0), 
                threads_num(1), b_init(false), force_v_sparse(false) {}
-    string model_path, init_m_path,pre_out_path;
+    string model_path, init_m_path,pre_out_path,combine_file_path;
     double init_mean, init_stdev;
     double w_alpha, w_beta, w_l1, w_l2;
     double v_alpha, v_beta, v_l1, v_l2;
@@ -36,6 +36,12 @@ struct trainer_option
 				if(i == argc - 1)
 					throw invalid_argument("invalid command\n");
 				pre_out_path=args[++i];
+			}
+            else if(args[i].compare("-combine_file") == 0)
+			{
+				if(i == argc - 1)
+					throw invalid_argument("invalid command\n");
+				combine_file_path=args[++i];
 			}
             else if(args[i].compare("-dim") == 0)
             {
@@ -142,6 +148,7 @@ public:
     virtual void run_task(vector<string>& dataBuffer);
     bool loadModel(ifstream& in);
     void outputModel(ofstream& out);
+    vector<vector<string>> combineFeatures;
 private:
     double train(int y, const vector<pair<string, double> >& x);
 private:
@@ -152,6 +159,7 @@ private:
     bool k0;
     bool k1;
     bool force_v_sparse;
+
     mutex outMtx;
 };
 
@@ -170,6 +178,23 @@ ftrl_trainer::ftrl_trainer(const trainer_option& opt,ofstream& _train_pre_out):t
     k1 = opt.k1;
     force_v_sparse = opt.force_v_sparse;
     pModel = new ftrl_model(opt.factor_num, opt.init_mean, opt.init_stdev);
+    ifstream infile;
+	infile.open(trainer_option.combine_file_path.data());   //将文件流对象与文件连接起来
+	assert(infile.is_open());   //若失败,则输出错误消息,并终止程序运行
+	combineFeatures.clear();
+	string s;
+	while(getline(infile,s))
+	{
+		vector<string> resultVec;
+		char* tmpStr = strtok(s, "#");
+	    while (tmpStr != NULL)
+	    {
+	    	resultVec.push_back(string(tmpStr));
+	        tmpStr = strtok(NULL, "#");
+	    }
+	    combineFeatures.push_back(resultVec)
+	}
+	infile.close();             //关闭文件输入流
 }
 
 void ftrl_trainer::run_task(vector<string>& dataBuffer)
@@ -177,7 +202,7 @@ void ftrl_trainer::run_task(vector<string>& dataBuffer)
 	vector<string> outputVec(dataBuffer.size());
     for(int i = 0; i < dataBuffer.size(); ++i)
     {
-        fm_sample sample(dataBuffer[i]);
+        fm_sample sample(dataBuffer[i],combineFeatures);
         if (sample.filter_flag){
         	outputVec[i]="";
         	continue;
